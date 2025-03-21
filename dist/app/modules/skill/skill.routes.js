@@ -1,0 +1,13 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.skillRoutes = void 0;
+const express_1 = require("express");
+const skill_controller_1 = require("./skill.controller");
+const router = (0, express_1.Router)();
+const skillController = new skill_controller_1.SkillController();
+router.post('/', skillController.createSkill);
+router.get('/', skillController.getAllSkills);
+router.get('/:id', skillController.getSkillById);
+router.patch('/:id', skillController.updateSkill);
+router.delete('/:id', skillController.deleteSkill);
+exports.skillRoutes = router;
