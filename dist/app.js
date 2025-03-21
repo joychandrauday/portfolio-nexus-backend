@@ -15,6 +15,8 @@ const project_routes_1 = require("./app/modules/Project/project.routes");
 const category_routes_1 = require("./app/modules/Category/category.routes");
 const skill_routes_1 = require("./app/modules/skill/skill.routes");
 const credentials_routes_1 = require("./app/modules/credentials/credentials.routes");
+const http_status_codes_1 = require("http-status-codes");
+const os_1 = __importDefault(require("os"));
 const app = (0, express_1.default)();
 // Middleware
 app.use(express_1.default.json());
@@ -33,8 +35,30 @@ app.use((0, cors_1.default)({
     credentials: true,
 }));
 app.use(body_parser_1.default.json());
-app.get('/', (req, res) => {
-    res.send('Hello World from Blog Chronicle  backend!!!');
+app.get("/", (req, res) => {
+    const currentDateTime = new Date().toISOString();
+    const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+    const serverHostname = os_1.default.hostname();
+    const serverPlatform = os_1.default.platform();
+    const serverUptime = os_1.default.uptime();
+    res.status(http_status_codes_1.StatusCodes.OK).json({
+        success: true,
+        message: "Welcome to Portfolio Server of Joy Chandra Uday",
+        version: "1.0.0",
+        clientDetails: {
+            ipAddress: clientIp,
+            accessedAt: currentDateTime,
+        },
+        serverDetails: {
+            hostname: serverHostname,
+            platform: serverPlatform,
+            uptime: `${Math.floor(serverUptime / 60 / 60)} hours ${Math.floor((serverUptime / 60) % 60)} minutes`,
+        },
+        developerContact: {
+            email: "joychandraud@gmail.com",
+            website: "joychandrauday-nexus.vercel.app",
+        },
+    });
 });
 // //appllication routes
 app.use('/api/auth', auth_routes_1.authRoutes); // order routes
