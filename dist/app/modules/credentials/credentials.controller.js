@@ -210,6 +210,7 @@ class CredentialsController {
     sendMessage(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log(req.body);
                 const { sender, message, name } = req.body;
                 // Send email to the receiver
                 const emailSubject = `You have a new message from ${name}!`;
