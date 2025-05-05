@@ -190,6 +190,7 @@ export class CredentialsController {
   // send message controlelrs
   async sendMessage(req: Request, res: Response): Promise<void> {
     try {
+      console.log(req.body);
       const { sender, message, name } = req.body
       // Send email to the receiver
       const emailSubject = `You have a new message from ${name}!`;

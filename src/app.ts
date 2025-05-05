@@ -1,5 +1,3 @@
-// 1. Sending requests to db from client
-
 import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
@@ -12,19 +10,25 @@ import { categoryRoutes } from './app/modules/Category/category.routes';
 import { skillRoutes } from './app/modules/skill/skill.routes';
 import { credentialsRoutes } from './app/modules/credentials/credentials.routes';
 import { StatusCodes } from 'http-status-codes';
-import os from "os";
+import os from 'os';
 
 const app: Application = express();
 
-// Middleware
-app.use(express.json());
-const allowedOrigins = ['http://localhost:3000', 'https://dashboard-nexus-blue.vercel.app', 'https://joychandrauday-nexus.vercel.app']
+// Allowed origins
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://dashboard-nexus-blue.vercel.app',
+  'https://joychandrauday-nexus.vercel.app',
+  'https://student-stationary-frontend.vercel.app',
+];
 
+// CORS middleware
 app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true); // Allow the origin
+        callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'), false);
       }
@@ -35,18 +39,25 @@ app.use(
   })
 );
 
+// Handle preflight OPTIONS requests
+app.options('*', cors());
+
+// Body parser middleware
+app.use(express.json());
 app.use(bodyParser.json());
-app.get("/", (req: Request, res: Response) => {
+
+// Root route for testing
+app.get('/', (req: Request, res: Response) => {
   const currentDateTime = new Date().toISOString();
-  const clientIp = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
   const serverHostname = os.hostname();
   const serverPlatform = os.platform();
   const serverUptime = os.uptime();
 
   res.status(StatusCodes.OK).json({
     success: true,
-    message: "Welcome to Portfolio Server of Joy Chandra Uday",
-    version: "1.0.0",
+    message: 'Welcome to Portfolio Server of Joy Chandra Uday',
+    version: '1.0.0',
     clientDetails: {
       ipAddress: clientIp,
       accessedAt: currentDateTime,
@@ -59,25 +70,25 @@ app.get("/", (req: Request, res: Response) => {
       )} minutes`,
     },
     developerContact: {
-      email: "joychandraud@gmail.com",
-      website: "joychandrauday-nexus.vercel.app",
+      email: 'joychandraud@gmail.com',
+      website: 'https://joychandrauday-nexus.vercel.app',
     },
   });
 });
 
-// //appllication routes
-app.use('/api/auth', authRoutes) // order routes
-app.use('/api/users', userRoutes) // product routes
-app.use('/api/blogs', blogRoutes) // order routes
-app.use('/api/admin', userRoutes)
-app.use('/api/projects', projectRoutes)
-app.use('/api/category', categoryRoutes)
-app.use('/api/skill', skillRoutes)
-app.use('/api/credentials', credentialsRoutes)
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/blogs', blogRoutes);
+app.use('/api/admin', userRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/category', categoryRoutes);
+app.use('/api/skill', skillRoutes);
+app.use('/api/credentials', credentialsRoutes);
 
-
-
+// Global error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   errorHandler(err, req, res, next);
 });
+
 export default app;
