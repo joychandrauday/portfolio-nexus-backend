@@ -19,6 +19,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
   'https://dashboard-nexus-blue.vercel.app',
+  'https://joychandrauday.vercel.app',
   'https://joychandrauday-nexus.vercel.app',
   'https://student-stationary-frontend.vercel.app',
 ];
